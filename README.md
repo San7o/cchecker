@@ -41,9 +41,9 @@ CHECK(x,
   CHECK(y,
     CHECK(z,
 	  z = x + y;
-    )
-  )
-)
+    );
+  );
+);
 ```
 
 Cool, not practical. So I moved to C++ and everything was much easier.
@@ -101,3 +101,5 @@ this to my own [standard library](https://github.com/San7o/tenno-tl)
 so I can reuse It easily.
 
 Its already time for the next project lol. Bye.
+
+Note: I did not use any form of AI neither I looked at other's work.
