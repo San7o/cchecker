@@ -2,16 +2,16 @@
 
 ## TLDR
 
-This [header only](./cchecker.hpp) library is a little run-time bworrow
-checker implemented in C++. It doen't use any recent features other
-than templates so It should be quite portable, the only header included
+This [header only](./cchecker.hpp) library is a little run-time borrow
+checker implemented in C++. It doesn't use any recent features other
+than templates so It is quite portable, the only header included
 is `<cassert>` to panic when the borrow rules are not met.
 
 ## Writeup
 
 I wanted to implement a borrow checker in C, It seemed like a cool
-project for an afternoon. Let's get over what are the rules of a
-borrow checker first:
+project for an afternoon. A borrow checker (at least, my borrow checker)
+is a system that imposes the following rules:
 - There can be infinite (many) immutable references to a value
 - There can be only one mutable referene to a value
 - The two rules above cannot happen togheter
@@ -19,7 +19,27 @@ borrow checker first:
   must be invalidated if the owner goes out of scope)
   
 If any of the aforementioned rules does not hold, the code panics (an
-assertion fails).
+assertion fails). Languages like Rust have this incorporated in the
+compiler, but for all the other folks this needs to be implemented
+manually. While creating a compile-time borrow checker is not trivial
+at all, the C++ committee is pushing more and more safety features into
+the language. A [famous proposal](https://safecpp.org/draft.html#introduction)
+for a full-fledged C++ borrow cheker was
+made but the context was quite... controversial. From my understanding,
+some safety features were already discussed and "almost" ready to be
+implemented, we know that the C++ standard moves very slow and features
+take years or decades to be implemented. This proposal came out of nowere
+with a full implementation (lots of hours of work) but was "never"
+properly discussed with the community, so the future of this proposal is
+quite uncertain.
+
+Well, enought talking, let's get into business.
+I am not building one of that (but maybe I will eventually), right
+now I just want to create a run-time borrow checker that panics when
+the rules are not met. While this is not as powerfult as a compile time
+one, It follows the principle of "fail early": if we made some "unsafe"
+variable declarations we should be punished as soon as possible when we
+reach that code.
 
 Now. I tried to write everything in C, trust me, but It wasn't quite..
 let's say, _ergonomic_. C does not have the concept of constructors
