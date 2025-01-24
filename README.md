@@ -36,7 +36,7 @@ quite uncertain.
 Well, enought talking, let's get into business.
 I am not building one of that (but maybe I will eventually), right
 now I just want to create a run-time borrow checker that panics when
-the rules are not met. While this is not as powerfult as a compile time
+the rules are not met. While this is not as powerful as a compile time
 one, It follows the principle of "fail early": if we made some "unsafe"
 variable declarations we should be punished as soon as possible when we
 reach that code.
