@@ -10,10 +10,8 @@ is `<cassert>` to panic when the borrow rules are not met.
 ## Writeup
 
 I wanted to implement a borrow checker in C, It seemed like a cool
-project for an afternoon. Let's get over what are the rules of this
-borrow checker first.
-
-The borrow checker checks for the following rules:
+project for an afternoon. Let's get over what are the rules of a
+borrow checker first:
 - There can be infinite (many) immutable references to a value
 - There can be only one mutable referene to a value
 - The two rules above cannot happen togheter
@@ -28,8 +26,8 @@ let's say, _ergonomic_. C does not have the concept of constructors
 and destructors bound to the scope of a variable, and I needed them
 since I need to know when a reference to a variable goes out of scope,
 among many other things. I tried creating a sort of constructor-desctructor
-with macro but It was _very_ ugly. Something like this:
-```
+with macros but It was _very_ ugly. Something like this:
+```cpp
 #define CHECK(NAME, ...) { \
   constructor_ ##Check(& NAME); \
   __VA_ARGS__ \
@@ -48,12 +46,12 @@ CHECK(x,
 )
 ```
 
-Yes, not practical. So I moved to C++ and everything was much easier.
-The owner of a value wraps a value in an inner context, and the
+Cool, not practical. So I moved to C++ and everything was much easier.
+The owner of a value wraps the value in an inner context, and the
 references hold a pointer to this context. It is very similar to
 smart pointer: the context contains a counter for mutable and
 immutable references that gets incremented when a new reference gets
-created and removed when a reference gors out of scope. If the owner's
+created and removed when a reference goes out of scope. If the owner's
 destructor gets called and the counters are not 0, that means that
 the references are not valid anymore so It panics. In particular, I
 created the following calsses:
@@ -67,16 +65,19 @@ You use `getRef()` or `getRefMut()` to get the reference types.
 
 For example, you can have multiple immutable references of a mutable
 value:
-```
+
+```cpp
 check::Val<int> x = 1;
 check::ValRef<int> a = x.getRef();   // OK
 check::ValRef<int> a2 = x.getRef();  // OK
 assert(a.get() == 1);
 assert(a2.get() == 1);
 ```
+
 But you cannot have multiple mutable references or both mutable and
 immutable references:
-```
+
+```cpp
 check::ValRef<int> b = y.getRef();
 check::ValRef<int> b2 = y.getRef();
 assert(b.get() == 3);
@@ -84,9 +85,11 @@ assert(b2.get() == 3);
 //check::ValMutRef<int> b3 = y.getMutRef(); // FAIL!
 
 ```
+
 When you create a mutable reference, you cannot use the owner to access
 the value until all the references to that owner go out of scope:
-```
+
+```cpp
 check::ValMut<int> c = 10;
 check::ValMutRef<int> d = c.getMutRef();
 // assert(c.get() == 10); // FAIL!
