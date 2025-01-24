@@ -1,4 +1,4 @@
-# ccheck
+# cchecker
 
 ## TLDR
 
